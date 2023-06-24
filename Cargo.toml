@@ -1,0 +1,20 @@
+[package]
+authors = ["Lemuel DLS"]
+description = ""
+edition = "2021"
+exclude = ["/examples", "/webview-dist", "/webview-src", "/node_modules"]
+links = "tauri-plugin-open"
+name = "tauri-plugin-open"
+rust-version = "1.65"
+version = "0.1.0"
+
+[dependencies]
+serde = "1.0"
+tauri = { version = "2.0.0-alpha.10" }
+thiserror = "1.0"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+webkit2gtk = "0.19.2"
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-alpha.6" }
