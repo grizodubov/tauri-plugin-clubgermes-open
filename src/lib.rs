@@ -1,8 +1,6 @@
-use std::{collections::HashMap, sync::Mutex};
-
 use tauri::{
     plugin::{Builder, TauriPlugin},
-    Manager, Runtime,
+    Runtime,
 };
 
 #[cfg(desktop)]
