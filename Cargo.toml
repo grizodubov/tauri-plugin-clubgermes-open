@@ -7,7 +7,7 @@ license = "MIT"
 links = "tauri-plugin-open"
 name = "tauri-plugin-open"
 rust-version = "1.65"
-version = "0.1.1"
+version = "0.1.2"
 
 [dependencies]
 serde = "1.0"
