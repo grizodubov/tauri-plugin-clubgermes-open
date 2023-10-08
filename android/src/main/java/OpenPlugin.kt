@@ -14,42 +14,45 @@ class OpenPlugin(private val activity: Activity) : Plugin(activity) {
     override fun load(webView: WebView) {
         super.load(webView)
 
-        val client = webView.webViewClient
-        webView.webViewClient =
-                object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(
-                            view: WebView,
-                            request: WebResourceRequest
-                    ): Boolean {
-                        val url = request.url.toString()
-                        val isHttp = url.startsWith("http://") || url.startsWith("https://")
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            val client = webView.webViewClient
 
-                        val isTauri = request.url.host == "tauri.localhost"
+            webView.webViewClient =
+                    (object : WebViewClient() {
+                        override fun shouldOverrideUrlLoading(
+                                view: WebView,
+                                request: WebResourceRequest
+                        ): Boolean {
+                            val url = request.url.toString()
+                            val isHttp = url.startsWith("http://") || url.startsWith("https://")
 
-                        if (isHttp && !isTauri) {
-                            activity.startActivity(Intent(Intent.ACTION_VIEW, request.url))
+                            val isTauri = request.url.host == "tauri.localhost"
 
-                            return true
+                            if (isHttp && !isTauri) {
+                                activity.startActivity(Intent(Intent.ACTION_VIEW, request.url))
+
+                                return true
+                            }
+
+                            return client.shouldOverrideUrlLoading(view, request)
                         }
 
-                        return client.shouldOverrideUrlLoading(view, request)
-                    }
+                        override fun shouldInterceptRequest(
+                                view: WebView,
+                                request: WebResourceRequest
+                        ): WebResourceResponse? {
+                            return client.shouldInterceptRequest(view, request)
+                        }
 
-                    override fun shouldInterceptRequest(
-                            view: WebView,
-                            request: WebResourceRequest
-                    ): WebResourceResponse? {
-                        return client.shouldInterceptRequest(view, request)
-                    }
-
-                    @android.annotation.SuppressLint("WebViewClientOnReceivedSslError")
-                    override fun onReceivedSslError(
-                            view: WebView?,
-                            handler: android.webkit.SslErrorHandler?,
-                            error: android.net.http.SslError?
-                    ) {
-                        client.onReceivedSslError(view, handler, error)
-                    }
-                }
+                        @android.annotation.SuppressLint("WebViewClientOnReceivedSslError")
+                        override fun onReceivedSslError(
+                                view: WebView?,
+                                handler: android.webkit.SslErrorHandler?,
+                                error: android.net.http.SslError?
+                        ) {
+                            client.onReceivedSslError(view, handler, error)
+                        }
+                    })
+        }
     }
 }
