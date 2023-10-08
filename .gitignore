@@ -1,3 +1,5 @@
+/.tauri
+
 ### Android ###
 # Gradle files
 .gradle/

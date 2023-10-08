@@ -1,34 +1,42 @@
 use tauri::{
     plugin::{Builder, TauriPlugin},
-    Runtime,
+    Manager, Runtime,
 };
 
-#[cfg(desktop)]
-mod desktop;
+// #[cfg(desktop)]
+// mod desktop;
 #[cfg(mobile)]
 mod mobile;
 
 mod error;
 
+// #[cfg(desktop)]
+// use desktop::Open;
 pub use error::{Error, Result};
+#[cfg(mobile)]
+use mobile::Open;
+
+pub trait OpenExt<R: Runtime> {}
+
+impl<R: Runtime, T: Manager<R>> crate::OpenExt<R> for T {}
 
 /// Initializes the plugin.
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
     #[allow(unused_variables)]
     Builder::new("open")
-        .setup(|_app, api| {
+        .setup(|app, api| {
             #[cfg(mobile)]
-            mobile::init(api)?;
+            mobile::init(app, api)?;
 
             Ok(())
         })
-        .on_webview_ready(|window| {
-            #[cfg(desktop)]
-            window
-                .with_webview(|webview| {
-                    desktop::on_webview_ready(webview).unwrap();
-                })
-                .unwrap();
-        })
+        // .on_webview_ready(|window| {
+        //     #[cfg(desktop)]
+        //     window
+        //         .with_webview(|webview| {
+        //             desktop::on_webview_ready(webview).unwrap();
+        //         })
+        //         .unwrap();
+        // })
         .build()
 }

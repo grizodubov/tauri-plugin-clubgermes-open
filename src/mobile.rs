@@ -1,5 +1,8 @@
 use serde::de::DeserializeOwned;
-use tauri::{plugin::PluginApi, Runtime};
+use tauri::{
+    plugin::{PluginApi, PluginHandle},
+    AppHandle, Runtime,
+};
 
 #[cfg(target_os = "android")]
 const PLUGIN_IDENTIFIER: &str = "com.plugin.open";
@@ -8,12 +11,19 @@ const PLUGIN_IDENTIFIER: &str = "com.plugin.open";
 tauri::ios_plugin_binding!(init_plugin_open);
 
 // initializes the Kotlin or Swift plugin classes
-pub fn init<R: Runtime, C: DeserializeOwned>(api: PluginApi<R, C>) -> crate::Result<()> {
+pub fn init<R: Runtime, C: DeserializeOwned>(
+    _app: &AppHandle<R>,
+    api: PluginApi<R, C>,
+) -> crate::Result<Open<R>> {
     #[cfg(target_os = "android")]
-    let _ = api.register_android_plugin(PLUGIN_IDENTIFIER, "OpenPlugin")?;
+    let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "OpenPlugin")?;
 
     #[cfg(target_os = "ios")]
-    let _ = api.register_ios_plugin(init_plugin_open)?;
+    let handle = api.register_ios_plugin(init_plugin_open)?;
 
-    Ok(())
+    Ok(Open(handle))
 }
+
+pub struct Open<R: Runtime>(PluginHandle<R>);
+
+impl<R: Runtime> Open<R> {}
