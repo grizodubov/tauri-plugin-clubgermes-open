@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.plugin.open"
+    namespace = "ru.clubgermes.social.plugin_open"
     compileSdk = 34
 
     defaultConfig {
