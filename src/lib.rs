@@ -9,6 +9,7 @@ use tauri::{
 mod mobile;
 
 mod error;
+mod models;
 
 // #[cfg(desktop)]
 // use desktop::Open;
