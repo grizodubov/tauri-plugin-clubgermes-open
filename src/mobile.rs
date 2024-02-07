@@ -4,6 +4,8 @@ use tauri::{
     AppHandle, Runtime,
 };
 
+use crate::models::*;
+
 #[cfg(target_os = "android")]
 const PLUGIN_IDENTIFIER: &str = "com.plugin.open";
 
@@ -24,6 +26,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     Ok(Open(handle))
 }
 
+/// Access to the Open APIs.
 pub struct Open<R: Runtime>(PluginHandle<R>);
 
 impl<R: Runtime> Open<R> {}
